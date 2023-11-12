@@ -71,19 +71,19 @@ app.get('/list', function(req, res){
         //콜백함수
         var json = JSON.parse(body);
         if (json.rsp_code[0]==='O'){
-            res.json(json)
+            res.json(json);
         }else{
-            const resultslist = json.res_list
-            const tmplist = []
+            const resultslist = json.res_list;
+            const tmplist = [];
             for( const [key, value] of Object.entries(resultslist)) {
-                let tmp = {}
-                tmp['account_alias'] = value.account_alias
-                tmp['bank_name'] = value.bank_name
-                tmp['account_num_masked'] = value.account_num_masked
-                tmplist.push(tmp)
+                let tmp = {};
+                tmp['account_alias'] = value.account_alias;
+                tmp['bank_name'] = value.bank_name;
+                tmp['account_num_masked'] = value.account_num_masked;
+                tmplist.push(tmp);
             }
-            const ress = {"res_list" : tmplist}
-            res.json(ress)
+            const ress = {"res_list" : tmplist};
+            res.json(ress);
         }
     });
 })
@@ -136,7 +136,7 @@ app.post('/withdraw', function(req, res){
     //1.계좌번호가 숫자 인지 확인
     if (isNaN(item.account_num)){
         check = false; /*isNaN은 숫자가 아닐경우 true반환*/
-        errmsg = '계좌번호 형식 확인(숫자로만 입력).'
+        errmsg = '계좌번호 형식 확인(숫자로만 입력).';
     }else{
         var account_num = Number(item.account_num);
         if(Number.isInteger(account_num)){
@@ -147,7 +147,7 @@ app.post('/withdraw', function(req, res){
                 // 계좌번호 범위가 10~14자리 인지 확인
                 if (account_digit < (10-digitcheck) || account_digit > (14-digitcheck)){ 
                     check = false;
-                    errmsg = '계좌번호 자릿수 확인(10자리 이상 14자리 이내)'
+                    errmsg = '계좌번호 자릿수 확인(10자리 이상 14자리 이내)';
                     console.log(account_digit);
                     console.log(account_num);
                 }
@@ -172,16 +172,16 @@ app.post('/withdraw', function(req, res){
         if(Number.isInteger(amount)){ //정수라면
             if(amount <= 0){
                 check = false;
-                errmsg = '이체값이 음수거나 0입니다.'
+                errmsg = '이체값이 음수거나 0입니다.';
             } //음수아니면 ok
         }else{ //정수가 아님
             check = false;
-            errmsg = '이체값이 정수가 아닙니다.'
+            errmsg = '이체값이 정수가 아닙니다.';
         }
         //이체 한도 범위에 들어오는 지 확인
         if (amount > maxTransfer_limit ){ 
             check = false;
-            errmsg = '1회 이체한도를 넘었습니다.(이체한도 : ' + maxTransfer_limit + '원)'
+            errmsg = '1회 이체한도를 넘었습니다.(이체한도 : ' + maxTransfer_limit + '원)';
         }
     }
     
@@ -210,12 +210,12 @@ app.get('/balance/fin_num', function(req, res){
     request.get(option, function (error, response, body) {
         var json = JSON.parse(body);
         if (json.rsp_code[0]==='O'){
-            res.json(json)
+            res.json(json);
         }else{
-            const tmpobj = {}
-            tmpobj['bank_name'] = json.bank_name
-            tmpobj['balance_amt'] = json.balance_amt
-            res.json(tmpobj)
+            const tmpobj = {};
+            tmpobj['bank_name'] = json.bank_name;
+            tmpobj['balance_amt'] = json.balance_amt;
+            res.json(tmpobj);
         }
     });
 })
@@ -245,22 +245,23 @@ app.get('/transaction-list/fin_num/', function(req, res){
     request.get(option, function (error, response, body) {
         var json = JSON.parse(body);
         if (json.rsp_code[0]==='O'){
-            res.json(json)
+            res.json(json);
         }else{
-            const resultslist = json.res_list//거래된 조회내역
-            const tmplist = []
+            const resultslist = json.res_list;//거래된 조회내역
+            const tmplist = [];
             for( const [key, value] of Object.entries(resultslist)) {
-                let tmp = {}
-                tmp['tran_date'] = value.tran_date
-                tmp['inout_type'] = value.inout_type
-                tmp['after_balance_amt'] = value.after_balance_amt
-                tmplist.push(tmp)
+                let tmp = {};
+                tmp['tran_date'] = value.tran_date;
+                tmp['inout_type'] = value.inout_type;
+                tmp['tran_amt'] = value.tran_amt;
+                tmp['after_balance_amt'] = value.after_balance_amt;
+                tmplist.push(tmp);
             }
-            const tmpobj = {}
-            tmpobj['bank_name'] = json.bank_name
-            tmpobj['balance_amt'] = json.balance_amt
-            tmpobj['res_list'] = tmplist
-            res.json(tmpobj)
+            const tmpobj = {};
+            tmpobj['bank_name'] = json.bank_name;
+            tmpobj['balance_amt'] = json.balance_amt;
+            tmpobj['res_list'] = tmplist;
+            res.json(tmpobj);
         }
     });
 })
@@ -269,5 +270,5 @@ app.get('/transaction-list/fin_num/', function(req, res){
 /* 6. 오류 처리 미들웨어 구성*/
 /* 7. 서버가 포트를 리스닝*/
 app.listen(app.get('port'), () => {
-    console.log(app.get('port'), 'empty port server inging :-)')
+    console.log(app.get('port'), 'empty port server inging :-)');
 });
