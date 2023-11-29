@@ -26,32 +26,37 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/snd2', (req, res) => {
+    res.sendFile(__dirname + '/secretindex.html');
+});
+
 //토큰 받기
-// app.get('/snd', function(req, res){
-//     console.log(req.query);
-//     var authCode = req.query.code;
-//     console.log(authCode);
-//     var option = {
-//         method : "POST",
-//         url : "https://testapi.openbanking.or.kr/oauth/2.0/token",
-//         header : {
-//             'Content-Type' : 'application/x-www-form-urlencoded'
-//         },
-//         form : {
-//             code : process.env.Access_Token,
-//             client_id : process.env.MyTelClientID, 
-//             client_secret : process.env.MYTelClientSecret,
-//             redirect_uri : 'http://localhost:8080/snd',
-//             grant_type : 'authorization_code'
-//         }
-//     }
-//     // resultChild 호출해서 얻은 토큰 정보를 사이트에 입력
-//     request(option, function (error, response, body) {
-//         console.log(body);
-//         var requestResultJSON = JSON.parse(body);
-//         res.render('resultChild',{data : requestResultJSON})
-//     });
-// })
+app.get('/snd', function(req, res){
+    console.log(req.query);
+    var authCode = req.query.code;
+    console.log(authCode);
+    var option = {
+        method : "POST",
+        url : "https://testapi.openbanking.or.kr/oauth/2.0/token",
+        header : {
+            'Content-Type' : 'application/x-www-form-urlencoded'
+        },
+        form : {
+            code : process.env.Access_Token,
+            client_id : process.env.MyTelClientID, 
+            client_secret : process.env.MYTelClientSecret,
+            redirect_uri : 'http://localhost:8080/snd',
+            grant_type : 'authorization_code'
+        }
+    }
+    // resultChild 호출해서 얻은 토큰 정보를 사이트에 입력
+    request(option, function (error, response, body) {
+        console.log(body);
+        var requestResultJSON = JSON.parse(body);
+        res.json({'data' : requestResultJSON})
+        console.log({'data' : requestResultJSON})
+    });
+})
 
 //기능1. 사용자 정보조회 = 등록 계좌정보 조회
 app.get('/list', function(req, res){
@@ -267,7 +272,18 @@ app.get('/transaction-list/fin_num/', function(req, res){
 })
 
 /* 5. 404 처리 미들웨어 구성 */
+// app.get((req, res)=>{
+//     res.status(404).send('not found');
+// })
+app.use((req, res, next) => {
+    res.status(404).send('<h1>Page not found(404)</h1>');
+})
 /* 6. 오류 처리 미들웨어 구성*/
+app.use(function(err, req, res, next) {
+    console.error(err.stack);
+    res.status(500).send('<h1>500 Server Error</h1>');
+});
+
 /* 7. 서버가 포트를 리스닝*/
 app.listen(app.get('port'), () => {
     console.log(app.get('port'), 'empty port server inging :-)');
