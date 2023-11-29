@@ -1,0 +1,51 @@
+name: Deploy to cloudtype
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Connect deploy key
+        uses: cloudtype-github-actions/connect@v1
+        with:
+          token: ${{ secrets.CLOUDTYPE_TOKEN }}
+          ghtoken: ${{ secrets.GHP_TOKEN }}
+      - name: Deploy
+        uses: cloudtype-github-actions/deploy@v1
+        with:
+          token: ${{ secrets.CLOUDTYPE_TOKEN }}
+          project: soda723/callbankserver
+          stage: main
+          yaml: |
+            name: callbankserver
+            app: node@18
+            options:
+              env:
+                - name: NODE_ENV
+                  value: production
+                - name: Access_Token
+                  secret: Access_Token
+                - name: MYTelClientSecret
+                  secret: MYTelClientSecret
+                - name: MySeqNo
+                  secret: MySeqNo
+                - name: MyTelClientID
+                  secret: MyTelClientID
+                - name: dldydrlrhkszhem
+                  secret: dldydrlrhkszhem
+                - name: fintech_use_num
+                  secret: fintech_use_num
+                - name: refresh_token
+                  secret: refresh_token
+                - name: PORT
+                  var: PORT
+              ports: "8080"
+              start: node apisample/server.js
+            context:
+              git:
+                url: git@github.com:${{ github.repository }}.git
+                ref: ${{ github.ref }}
